@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MFPS · Machine 1 Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="background-orb orb-1"></div>
+    <div class="background-orb orb-2"></div>
+
+    <div class="dashboard-container">
+        <header>
+            <div class="header-left">
+                <div class="machine-id">MACHINE 1</div>
+                <h1>Failure Prevention<br><span>System</span></h1>
+            </div>
+            <div class="header-right">
+                <div class="status-indicator">
+                    <div id="conn-dot" class="dot disconnected"></div>
+                    <span id="conn-status">Waiting for link…</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Displacement Alert Banner (shows only when displaced) -->
+        <div id="displacement-banner" class="displacement-banner hidden">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <span>CRITICAL — Machine Displaced! Hardware relay has cut power.</span>
+        </div>
+
+        <!-- Offline Alert Banner -->
+        <div id="offline-banner" class="offline-banner hidden">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="1" y1="1" x2="23" y2="23"/>
+                <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.56 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/>
+            </svg>
+            <span>CRITICAL — Device Offline. No data received for &gt;5 seconds.</span>
+        </div>
+
+        <!-- Status Row -->
+        <div class="status-row">
+            <!-- Device Online/Offline -->
+            <div class="status-card" id="device-card">
+                <div class="status-icon-wrap" id="device-icon-wrap">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+                        <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+                        <line x1="12" y1="20" x2="12.01" y2="20"/>
+                    </svg>
+                </div>
+                <div class="status-text-block">
+                    <div class="status-label">Device</div>
+                    <div class="status-value" id="device-status">Connecting…</div>
+                </div>
+            </div>
+
+            <!-- Machine State (Running / Off) -->
+            <div class="status-card" id="machine-card">
+                <div class="status-icon-wrap" id="machine-icon-wrap">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+                    </svg>
+                </div>
+                <div class="status-text-block">
+                    <div class="status-label">Machine State</div>
+                    <div class="status-value" id="machine-state-val">Awaiting Data…</div>
+                </div>
+            </div>
+
+            <!-- Displacement -->
+            <div class="status-card" id="attach-card">
+                <div class="status-icon-wrap" id="attach-icon-wrap">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                    </svg>
+                </div>
+                <div class="status-text-block">
+                    <div class="status-label">Displacement</div>
+                    <div class="status-value" id="attach-status">Checking…</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sensor Grid -->
+        <main class="grid-layout">
+            <!-- Current -->
+            <div class="glass-card">
+                <div class="card-title">Current</div>
+                <div class="card-value"><span id="val-current">--</span><span class="unit">A</span></div>
+                <div class="gauge-ring" id="gauge-current">
+                    <svg viewBox="0 0 80 80"><circle class="track" cx="40" cy="40" r="30"/><circle class="fill" id="arc-current" cx="40" cy="40" r="30" style="stroke-dasharray:0 188.5"/></svg>
+                </div>
+                <div class="card-sub" id="sub-current">0–30 A</div>
+            </div>
+
+            <!-- Temperature -->
+            <div class="glass-card">
+                <div class="card-title">Temperature</div>
+                <div class="card-value"><span id="val-temperature">--</span><span class="unit">°C</span></div>
+                <div class="gauge-ring" id="gauge-temperature">
+                    <svg viewBox="0 0 80 80"><circle class="track" cx="40" cy="40" r="30"/><circle class="fill" id="arc-temperature" cx="40" cy="40" r="30" style="stroke-dasharray:0 188.5"/></svg>
+                </div>
+                <div class="card-sub" id="sub-temperature">0–120 °C</div>
+            </div>
+
+            <!-- Voltage -->
+            <div class="glass-card">
+                <div class="card-title">Voltage</div>
+                <div class="card-value"><span id="val-volt">--</span><span class="unit">V</span></div>
+                <div class="gauge-ring" id="gauge-volt">
+                    <svg viewBox="0 0 80 80"><circle class="track" cx="40" cy="40" r="30"/><circle class="fill" id="arc-volt" cx="40" cy="40" r="30" style="stroke-dasharray:0 188.5"/></svg>
+                </div>
+                <div class="card-sub">0–260 V</div>
+            </div>
+
+            <!-- Vibration -->
+            <div class="glass-card vibration-card" id="vibration-card">
+                <div class="card-title">Vibration</div>
+                <div class="vibration-display">
+                    <div class="vib-icon" id="vib-icon">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                    </div>
+                    <div class="vib-label" id="val-vibration">--</div>
+                </div>
+                <div class="vib-bars" id="vib-bars">
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+            </div>
+        </main>
+
+        <!-- Alert History (last 5 alerts) -->
+        <section class="alert-section">
+            <div class="section-header">Recent Alerts</div>
+            <div id="alert-list" class="alert-list">
+                <div class="alert-empty">No alerts yet</div>
+            </div>
+        </section>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
